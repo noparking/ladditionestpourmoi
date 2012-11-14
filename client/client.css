@@ -1,0 +1,23 @@
+/* CSS declarations go here */
+body {
+	padding-top: 50px;
+	padding-bottom: 40px;
+}
+
+section {
+	padding-top: 50px;
+}
+
+#login-buttons a {
+	text-decoration: none;
+	color: #777;
+}
+
+.thumbnail h3 {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.show_on_hover {
+	position: absolute;
+}
