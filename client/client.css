@@ -21,3 +21,50 @@ section {
 .show_on_hover {
 	position: absolute;
 }
+
+.welcome h1 {
+	font-size: 40px;
+	line-height: 1;
+	margin-top: 30px;
+	margin-bottom: 30px;
+}
+
+.welcome p {
+	font-size: 23px;
+	line-height: 30px;
+	margin-top: 40px;
+	margin-bottom: 20px;
+}
+
+.center {
+	text-align: center;
+}
+
+.user {
+	height: 450px;
+}
+
+.starredWrapper {
+	max-height: 200px;
+}
+
+.hand {
+	cursor: hand;
+	cursor: pointer;
+}
+
+.grad {
+	background-image: linear-gradient(bottom, rgb(228,229,229) 29%, rgb(255,255,255) 59%);
+	background-image: -o-linear-gradient(bottom, rgb(228,229,229) 29%, rgb(255,255,255) 59%);
+	background-image: -moz-linear-gradient(bottom, rgb(228,229,229) 29%, rgb(255,255,255) 59%);
+	background-image: -webkit-linear-gradient(bottom, rgb(228,229,229) 29%, rgb(255,255,255) 59%);
+	background-image: -ms-linear-gradient(bottom, rgb(228,229,229) 29%, rgb(255,255,255) 59%);
+
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0.29, rgb(228,229,229)),
+		color-stop(0.59, rgb(255,255,255))
+	);
+}

@@ -1,6 +1,5 @@
 
 Meteor.methods({
-
   invite: function (toId, msg) {
     if (Meteor.isServer)
       sendInvitation(this.userId, toId, msg);
@@ -19,11 +18,3 @@ Meteor.users.allow({
     return false;
   }
 });
-
-var contactEmail = function (user) {
-  if (user.emails && user.emails.length)
-    return user.emails[0].address;
-  if (user.services && user.services.facebook && user.services.facebook.email)
-    return user.services.facebook.email;
-  return null;
-};

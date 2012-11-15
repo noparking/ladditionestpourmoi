@@ -1,14 +1,12 @@
 
 Meteor.startup(function () {
   // code to run on client at startup
-  Session.set("limit", 8);
-  Session.set("profile", "");
-
-  $('#profileDialog').on('hidden', function () {
-    Session.set('profile', '');
-  });
-
+  Session.set('limit', 8);
+  Session.set('profile', '');
+  Session.set('showProfile', '');
 });
+
+Meteor.subscribe('userData');
 
 Meteor.autosubscribe(function() {
   Meteor.subscribe("partialUsers", Session.get("limit"));
@@ -19,6 +17,16 @@ Meteor.autorun(function () {
     $('#profileDialog').modal('show');  
   }
 });
+
+Meteor.autorun(function () {
+  if(!Session.equals('showProfile', '')) {
+    $('#showProfileDialog').modal('show');  
+  }
+});
+
+Handlebars.registerHelper('bio', function (bio) {
+  return new Handlebars.SafeString(bio.replace(/\n/g, '<br />'));
+}); 
 
 // Users
 
@@ -33,23 +41,12 @@ Template.users.events({
 });
 
 Template.users.rendered = function ( ) {
-  $('.user').hover(function() {
-      $(this).find('.show_on_hover').show();
-    },
-    function () {
-      $(this).find('.show_on_hover').hide();
-    }
-  );
-  $(".show_on_hover").hide();
-}
+  $(".wrapper").dotdotdot();
+};
 
-Template.users.events({
-  'click .invite': function (e) {
-    Session.set("invited", this._id);
-    $('#inviteDialog').modal('show');
-  },
-  'click .edit': function (e) {
-    Session.set("profile", this._id);
+Template.user.events({
+  'click': function () {
+    Session.set("showProfile", this._id);
   }
 });
 
@@ -67,15 +64,39 @@ Template.welcome.events({
 });
 
 // Starred Profile
+/*
+Auto resize the name to fill the total width, doesnt work
+Template.users.rendered = function ( ) {
+  var sectionWidth = $('.fullwidth').parent().width();
+  console.log(sectionWidth);
+  $('.fullwidth').each(function(){
+    var originalFontSize = $(this).css('font-size');
+    var spanWidth = $(this).width();
+    console.log("span"+spanWidth);
+    console.log("origfs"+parseInt(originalFontSize));
+    var newFontSize = sectionWidth * parseInt(originalFontSize) / spanWidth;
+    console.log("fs "+newFontSize);
+    $(this).css({"font-size" : newFontSize+"px", "line-height" : newFontSize/1.2 + "px"});
+  });
+};
+*/
 
 Template.starredProfile.user = function () {
   return Meteor.users.findOne({'profile.mentor':true});
 };
 
+Template.starredProfile.rendered = function ( ) {
+  $(".starredWrapper").dotdotdot();
+};
+
 Template.starredProfile.events({
-  'click #inviteButton': function () {
+  'click #inviteButton': function (e) {
+    e.stopImmediatePropagation();
     Session.set("invited", this._id);
     $('#inviteDialog').modal('show');
+  },
+  'click': function (e) {
+    Session.set("showProfile", this._id);
   }
 });
 
@@ -94,7 +115,7 @@ Template.inviteDialog.events({
   }
 });
 
-// Profile Dialog
+// Edit Profile Dialog
 
 Template.profileDialog.mentorchecked = function () {
   var user = Meteor.users.findOne(Session.get("profile"));
@@ -103,10 +124,23 @@ Template.profileDialog.mentorchecked = function () {
   else return '';
 };
 
+Template.profileDialog.modalLabel = function () {
+  var user = Meteor.users.findOne(Session.get("profile"));
+  if(user === undefined) return 'Profile';
+  else if(user._id == Meteor.userId()) return 'Mon profile';
+  else return 'Le profile de '+user.profile.name;
+};
+
 Template.profileDialog.profile = function () {
   var user = Meteor.users.findOne(Session.get("profile"));
   if(user === undefined) return undefined;
   return user.profile;
+};
+
+Template.profileDialog.rendered = function () {
+  $('#profileDialog').on('hidden', function () {
+    Session.set('profile', '');
+  });
 };
 
 Template.profileDialog.events({
@@ -123,5 +157,36 @@ Template.profileDialog.events({
       "profile.mentor": ! ! document.getElementById("profileMentor").checked,
     } });
     $('#profileDialog').modal('hide');
+  },
+});
+
+// Show Profile Dialog
+
+Template.showProfileDialog.profile = function () {
+  var user = Meteor.users.findOne(Session.get("showProfile"));
+  if(user === undefined) return undefined;
+  return user.profile;
+};
+
+Template.showProfileDialog.rendered = function () {
+  $('#showProfileDialog').on('hidden', function () {
+    Session.set('showProfile', '');
+  });
+};
+
+Template.showProfileDialog.adminUser = function () {
+  return Meteor.user() && Meteor.user().admin;
+};
+
+Template.showProfileDialog.events({
+  'click .invite': function (e) {
+    console.log(this);
+    Session.set("invited", Session.get('showProfile'));
+    $('#showProfileDialog').modal('hide');
+    $('#inviteDialog').modal('show');
+  },
+  'click .edit': function (e) {
+    $('#showProfileDialog').modal('hide');
+    Session.set("profile", Session.get('showProfile'));
   },
 });

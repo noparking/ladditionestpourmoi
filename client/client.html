@@ -20,14 +20,15 @@
   <div class="container">
 
     <div class="row">
-      <div class="offset2 span3">
-        <h2>Mentor à l'affiche</h2>
+      <div class="offset1 span4">
+        <h2 class="center">Entrepreneur à l'affiche</h2>
         {{> starredProfile}}
       </div>
 
       {{> welcome}}
     </div>
-
+<!--
+TODO rework the texts
     <br/><br/><br/><br/><br/>
     <hr/>
     <div class="row">
@@ -43,7 +44,7 @@
         <p>Vous êtes prêts à payer un repas pour en discuter avec une personne qualifiées</p>
       </div>
     </div>
-
+-->
     <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><hr/>
     <section id="users">
         {{> users}}
@@ -65,6 +66,7 @@
   </div> <!-- /container -->
   <!-- modal windows -->
   {{> profileDialog}}
+  {{> showProfileDialog}}
   {{> inviteDialog}}
 </body>
 
@@ -87,40 +89,40 @@
 
 <template name="user">
   <li class="span3">
-    <div class="thumbnail user">
-        <div class="show_on_hover"><a class="invite btn btn-primary" ahref="#">L'inviter au restaurant</a><br/><a class="edit btn" ahref="#">Editer le profile</a></div>
+    <div class="thumbnail user wrapper hand">
         <img src="{{profile.picture}}?s=260" alt="{{profile.name}}"/>
         <div class="caption">
           <h3>{{profile.name}}</h3>
           <p><a href="http://twitter.com/{{profile.twitter}}">{{profile.twitter}}</a></p>
           <p>{{profile.city}}</p>
-          <p>{{profile.bio}}</p>
+          <p>{{bio profile.bio}}</p>
       </div>
     </div>
   </li>
 </template>
 
 <template name="welcome">
-  <div class="span4">
-    <h3>Des entrepreneurs et des professionnels qui acceptent d'être invités au restaurant.</h3>
-    <p>Ce repas peut devenir l'occasion idéale d'échanger sur les problématiques de l'entrepreneur. A vous de sélectionner l'hôte qui correspond le mieux à vos questions du moment, à envoyer une invitation personnalisée puis à bien préparer ce moment d'échange...</p>
+  <div class="offset1 span6 welcome center">
+    <h1>Invitez des entrepreneurs experimentés au restaurant !</h1>
+    <p>Vous avez de l'<b>experience</b> dans un domaine et vous voulez la <b>partager</b> autour d'un bon repas offert ?</p>
+    <p>Vous avez un <b>problème</b> précis et vous êtes prêts à payer un restaurant pour en discuter avec une <b>personne qualifiée</b> ?</p>
     {{#unless currentUser}}
-      <a class="btn btn-large btn-success" id="signupButton">Inscription</a>
+      <p><a class="btn btn-large btn-success" id="signupButton">Inscrivez-vous dès maintenant !</a></p>
     {{/unless}}
   </div>
 </template>
 
 <template name="starredProfile">
-  <div class="thumbnail">
+  <div class="thumbnail grad hand">
     {{#if user}}
       {{#with user}}
-        <img src="{{profile.picture}}?s=260" alt="{{profile.name}}"/>
+        <img src="{{profile.picture}}?s=360" alt="{{profile.name}}"/>
         <div class="caption">
           <h3>{{profile.name}}</h3>
           <p><a href="http://twitter.com/{{profile.twitter}}">{{profile.twitter}}</a></p>
-          <p>{{profile.city}}</p>
-          <p>{{profile.bio}}</p>
-          <p>
+          <h4>{{profile.city}}</h4>
+          <p class="starredWrapper">{{bio profile.bio}}</p>
+          <p class="center">
             {{#if currentUser}}
               <a class="btn btn-primary" id="inviteButton">L'inviter au restaurant</a>
             {{else}}
@@ -156,13 +158,13 @@
   <div id="profileDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-      <h3 id="myModalLabel">Mon profile</h3>
+      <h3 id="myModalLabel">{{modalLabel}}</h3>
     </div>
     <div class="modal-body">
       <form>
           <label>Nom</label>
           <input id="profileName" class="span5" type="text" placeholder="Prénom Nom…" value="{{profile.name}}">
-          <label>Nom</label>
+          <label>Ville</label>
           <input id="profileCity" class="span5" type="text" placeholder="Ville où manger…" value="{{profile.city}}">
           <label>Url de mon avatar (laissez vide pour utiliser gravatar)</label>
           <input id="profilePicture" class="span5" type="text" placeholder="http://…" value="{{profile.picture}}">
@@ -176,8 +178,41 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+      <button class="btn" data-dismiss="modal" aria-hidden="true">Fermer</button>
       <button id="saveProfile" class="btn btn-primary">Save changes</button>
+    </div>
+  </div>
+</template>
+
+<template name="showProfileDialog">
+  <div id="showProfileDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="myModalLabel2">{{profile.name}}</h3>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="span2">
+          <img src="{{profile.picture}}?s=160" alt="{{profile.name}}"/>
+        </div>
+        <div class="span2">
+          <p><a href="http://twitter.com/{{profile.twitter}}">{{profile.twitter}}</a></p>
+          <h4>{{profile.city}}</h4>
+        </div>
+      </div>
+      <br/>
+      <p>{{bio profile.bio}}</p>
+    </div>
+    <div class="modal-footer">
+        {{#if currentUser}}
+          <a class="invite btn btn-primary" ahref="#">L'inviter au restaurant</a> 
+          {{#if adminUser}}
+            <a class="edit btn" ahref="#">Editer le profile</a> 
+          {{/if}}
+        {{else}}
+          <a class="btn disabled">Inscrivez-vous pour l'inviter</a>
+        {{/if}}
+      <button class="btn" data-dismiss="modal" aria-hidden="true">Fermer</button>
     </div>
   </div>
 </template>

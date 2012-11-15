@@ -8,6 +8,10 @@ Meteor.publish('partialUsers', function(limit) {
   return Meteor.users.find({'profile.mentor':true}, {limit: limit});
 });
 
+Meteor.publish("userData", function () {
+  return Meteor.users.find({_id: this.userId}, {fields: {'admin': 1}});
+});
+
 var sendInvitation = function (fromId, toId, msg) {
   var from = Meteor.users.findOne(fromId);
   var to = Meteor.users.findOne(toId);
@@ -40,3 +44,11 @@ var sendInvitation = function (fromId, toId, msg) {
     text: from.profile.name+" a invité "+to.profile.name+" au restaurant !\n\nVoici le mail qui a été envoié:\n\n\n"+txt
   });
 }
+
+var contactEmail = function (user) {
+  if (user.emails && user.emails.length)
+    return user.emails[0].address;
+  if (user.services && user.services.facebook && user.services.facebook.email)
+    return user.services.facebook.email;
+  return null;
+};
