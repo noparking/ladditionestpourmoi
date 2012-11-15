@@ -9,7 +9,7 @@ Meteor.publish('partialUsers', function(limit) {
 });
 
 Meteor.publish("allUserData", function () {
-  return Meteor.users.find({'profile.mentor':true}, {fields: {admin: 1, starred: 1, profile: 1}});
+  return Meteor.users.find({'profile.mentor':true, 'emails[0].verified':true}, {fields: {admin: 1, starred: 1, profile: 1}});
 });
 
 var sendInvitation = function (fromId, toId, msg) {
