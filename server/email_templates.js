@@ -1,5 +1,5 @@
 
-Accounts.emailTemplates.from = "L'équipe de L'addition est pour moi <no-reply@ladditionestpourmoi.fr>";
+Accounts.emailTemplates.from = "L'équipe de L'addition est pour moi <contact@ladditionestpourmoi.fr>";
 
 Accounts.emailTemplates.resetPassword.subject = function(user) {
   return "Comment réinitialiser votre mot de passe sur " + Accounts.emailTemplates.siteName;
