@@ -1,4 +1,4 @@
-function toto() {
+(function () {
 
   //
   // populate the session so that the appropriate dialogs are
@@ -6,7 +6,6 @@ function toto() {
   // special URLs. since accounts-ui depends on accounts-urls, we are
   // guaranteed to have these set at this point.
   //
-console.log("ok");
 
   // reads a reset password token from the url's hash fragment, if it's
   // there. if so prevent automatically logging in since it could be
@@ -16,11 +15,11 @@ console.log("ok");
   // reset password urls use hash fragments instead of url paths/query
   // strings so that the reset password token is not sent over the wire
   // on the http request
-console.log(window.location);
+
   var match;
   match = window.location.hash.match(/^\#\/reset-password\/(.*)$/);
   if (match) {
-console.log("matche"+match[1]);
+
     Accounts._preventAutoLogin = true;
     Accounts._resetPasswordToken = match[1];
     window.location.hash = '';
@@ -279,4 +278,4 @@ console.log("matche"+match[1]);
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
-}
+})();

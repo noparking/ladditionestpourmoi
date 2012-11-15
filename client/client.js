@@ -1,13 +1,9 @@
-console.log("st",window.location);
-
 
 Meteor.startup(function () {
-console.log("in st",window.location);
   // code to run on client at startup
   Session.set('limit', 8);
   Session.set('profile', '');
   Session.set('showProfile', '');
-  toto();
 });
 
 Meteor.subscribe('allUserData');
@@ -29,7 +25,7 @@ Meteor.autorun(function () {
 });
 
 Handlebars.registerHelper('bio', function (bio) {
-  return new Handlebars.SafeString(bio.replace(/\n/g, '<br />'));
+  if(bio) return new Handlebars.SafeString(bio.replace(/\n/g, '<br />'));
 }); 
 
 Handlebars.registerHelper('isAdmin', function (fn) {
