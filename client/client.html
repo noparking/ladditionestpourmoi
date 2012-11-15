@@ -80,21 +80,22 @@ TODO rework the texts
       {{/each}}
     </ul>
   </div>
-  <div class="row">
+<!--  <div class="row">
     <div class="offset5 span4">
       <a class="btn" id="moreUsersButton">Voir davantage de profiles</a>
     </div>
   </div>
+-->
 </template>
 
 <template name="user">
   <li class="span3">
-    <div class="thumbnail user wrapper hand">
+    <div class="thumbnail user wrapper hand grad">
         <img src="{{profile.picture}}?s=260" alt="{{profile.name}}"/>
         <div class="caption">
           <h3>{{profile.name}}</h3>
           <p><a href="http://twitter.com/{{profile.twitter}}">{{profile.twitter}}</a></p>
-          <p>{{profile.city}}</p>
+          <p><b>{{profile.city}}</b></p>
           <p>{{bio profile.bio}}</p>
       </div>
     </div>
@@ -162,19 +163,27 @@ TODO rework the texts
     </div>
     <div class="modal-body">
       <form>
+          {{#isAdmin}}
+            {{#if user.admin}}
+              <button id="unsetAdmin" class="btn">Retirer l'admin</button>
+            {{else}}
+              <button id="setAdmin" class="btn">Passer admin</button>
+            {{/if}}
+              <button id="setStarred" class="btn">Mettre à l'affiche</button>
+          {{/isAdmin}}
           <label>Nom</label>
-          <input id="profileName" class="span5" type="text" placeholder="Prénom Nom…" value="{{profile.name}}">
+          <input id="profileName" class="span5" type="text" placeholder="Prénom Nom…" value="{{user.profile.name}}">
           <label>Ville</label>
-          <input id="profileCity" class="span5" type="text" placeholder="Ville où manger…" value="{{profile.city}}">
+          <input id="profileCity" class="span5" type="text" placeholder="Ville où manger…" value="{{user.profile.city}}">
           <label>Url de mon avatar (laissez vide pour utiliser gravatar)</label>
-          <input id="profilePicture" class="span5" type="text" placeholder="http://…" value="{{profile.picture}}">
+          <input id="profilePicture" class="span5" type="text" placeholder="http://…" value="{{user.profile.picture}}">
           <label>Twitter</label>
-          <input id="profileTwitter" class="span5" type="text" placeholder="@username…" value="{{profile.twitter}}">
+          <input id="profileTwitter" class="span5" type="text" placeholder="@username…" value="{{user.profile.twitter}}">
           <label class="checkbox">
             <input id="profileMentor" {{mentorchecked}} type="checkbox" value="1"> Je veux être inscris comme mentor et pouvoir être invité à manger à l'oeil
           </label>
           <label>Bio</label>
-          <textarea id="profileBio" class="span5" rows="10">{{profile.bio}}</textarea>
+          <textarea id="profileBio" class="span5" rows="10">{{user.profile.bio}}</textarea>
       </form>
     </div>
     <div class="modal-footer">
@@ -185,6 +194,7 @@ TODO rework the texts
 </template>
 
 <template name="showProfileDialog">
+  {{#if profile}}
   <div id="showProfileDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -206,13 +216,14 @@ TODO rework the texts
     <div class="modal-footer">
         {{#if currentUser}}
           <a class="invite btn btn-primary" ahref="#">L'inviter au restaurant</a> 
-          {{#if adminUser}}
+          {{#isAdmin}}
             <a class="edit btn" ahref="#">Editer le profile</a> 
-          {{/if}}
+          {{/isAdmin}}
         {{else}}
           <a class="btn disabled">Inscrivez-vous pour l'inviter</a>
         {{/if}}
       <button class="btn" data-dismiss="modal" aria-hidden="true">Fermer</button>
     </div>
   </div>
+  {{/if}}
 </template>

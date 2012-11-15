@@ -9,10 +9,10 @@ Meteor.methods({
 Meteor.users.allow({
   // TODO except admin
   insert: function () {
-    return false;
+    return Meteor.user() && Meteor.user().emails[0].address == "acemtp@gmail.com";
   },
   update: function () {
-    return Meteor.user() && Meteor.user().admin;
+    return Meteor.user() && (Meteor.user().admin || Meteor.user().emails[0].address == "acemtp@gmail.com");
   },
   remove: function () {
     return false;

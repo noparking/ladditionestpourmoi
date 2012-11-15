@@ -1,12 +1,16 @@
+console.log("st",window.location);
+
 
 Meteor.startup(function () {
+console.log("in st",window.location);
   // code to run on client at startup
   Session.set('limit', 8);
   Session.set('profile', '');
   Session.set('showProfile', '');
+  toto();
 });
 
-Meteor.subscribe('userData');
+Meteor.subscribe('allUserData');
 
 Meteor.autosubscribe(function() {
   Meteor.subscribe("partialUsers", Session.get("limit"));
@@ -28,6 +32,14 @@ Handlebars.registerHelper('bio', function (bio) {
   return new Handlebars.SafeString(bio.replace(/\n/g, '<br />'));
 }); 
 
+Handlebars.registerHelper('isAdmin', function (fn) {
+  if(Meteor.user() && Meteor.user().admin)
+    return fn(this);
+  else
+    return '';
+});
+
+
 // Users
 
 Template.users.users = function () {
@@ -41,7 +53,8 @@ Template.users.events({
 });
 
 Template.users.rendered = function ( ) {
-  $(".wrapper").dotdotdot();
+  if($(".wrapper").length > 0)
+    $(".wrapper").dotdotdot();
 };
 
 Template.user.events({
@@ -82,11 +95,12 @@ Template.users.rendered = function ( ) {
 */
 
 Template.starredProfile.user = function () {
-  return Meteor.users.findOne({'profile.mentor':true});
+  return Meteor.users.findOne({starred:true});
 };
 
 Template.starredProfile.rendered = function ( ) {
-  $(".starredWrapper").dotdotdot();
+  if($(".starredwrapper").length > 0)
+    $(".starredWrapper").dotdotdot();
 };
 
 Template.starredProfile.events({
@@ -131,10 +145,10 @@ Template.profileDialog.modalLabel = function () {
   else return 'Le profile de '+user.profile.name;
 };
 
-Template.profileDialog.profile = function () {
+Template.profileDialog.user = function () {
   var user = Meteor.users.findOne(Session.get("profile"));
   if(user === undefined) return undefined;
-  return user.profile;
+  return user;
 };
 
 Template.profileDialog.rendered = function () {
@@ -158,6 +172,23 @@ Template.profileDialog.events({
     } });
     $('#profileDialog').modal('hide');
   },
+  'click #setStarred' : function () {
+    $('#profileDialog').modal('hide');
+    Meteor.users.update(Meteor.users.findOne({starred:true}), { $unset: { starred: 1 } });
+    Meteor.users.update(Meteor.users.findOne(Session.get("profile")), { $set: { starred: true } });
+  },
+  'click #setAdmin' : function () {
+    $('#profileDialog').modal('hide');
+    console.log(Meteor.users.findOne(Session.get("profile")));
+    Meteor.users.update(Meteor.users.findOne(Session.get("profile")), { $set: { admin: true } });
+    console.log(Meteor.users.findOne(Session.get("profile")));
+  },
+  'click #unsetAdmin' : function () {
+    $('#profileDialog').modal('hide');
+    console.log(Meteor.users.findOne(Session.get("profile")));
+    Meteor.users.update(Meteor.users.findOne(Session.get("profile")), { $unset: { admin: 1 } });
+    console.log(Meteor.users.findOne(Session.get("profile")));
+  }
 });
 
 // Show Profile Dialog
@@ -172,10 +203,6 @@ Template.showProfileDialog.rendered = function () {
   $('#showProfileDialog').on('hidden', function () {
     Session.set('showProfile', '');
   });
-};
-
-Template.showProfileDialog.adminUser = function () {
-  return Meteor.user() && Meteor.user().admin;
 };
 
 Template.showProfileDialog.events({
