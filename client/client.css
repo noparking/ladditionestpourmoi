@@ -2,6 +2,22 @@
 body {
 	padding-top: 50px;
 	padding-bottom: 40px;
+	background-image: url('/bgnoise.png');
+	font-family: 'Source Sans Pro', sans-serif;
+}
+
+/* fix the blank between top and navbar on iphone */
+@media (max-width: 979px) {
+	body {
+    	padding-top: 0;
+	}
+}
+
+/* fix the modal that disapear on iphone */
+@media (max-width: 767px) {
+	.modal.fade.in {
+		top: 5%;
+	}
 }
 
 section {
@@ -11,6 +27,35 @@ section {
 #login-buttons a {
 	text-decoration: none;
 	color: #777;
+}
+
+.add {
+	position: relative;
+	top: -5px;
+	color: #EDC951;
+	font-weight: 300;
+}
+
+.brand {
+	color: red;
+}
+
+.logo {
+	display: block;
+	float: left;
+	padding: 10px 20px 10px;
+	margin-left: -20px;
+	font-size: 20px;
+	line-height: 1;
+	color: #555;
+	text-shadow: 1px 1px 0 white;
+	font-weight: 300;
+	text-shadow: 0 0 15px #aaa;
+}
+
+a:hover.logo {
+	text-decoration: none;	
+	text-shadow: 0 0 15px #222;
 }
 
 .thumbnail h3 {
@@ -27,6 +72,9 @@ section {
 	line-height: 1;
 	margin-top: 30px;
 	margin-bottom: 30px;
+	color: #555;
+	text-shadow: 1px 1px 0 white;
+	font-weight: 300;
 }
 
 .welcome p {
@@ -34,6 +82,22 @@ section {
 	line-height: 30px;
 	margin-top: 40px;
 	margin-bottom: 20px;
+	color: #666;
+	text-shadow: 1px 1px 0 white;
+	font-weight: 200;
+}
+
+h2 {
+	color: #444;
+	text-shadow: 1px 1px 0 white;
+	font-weight: 400;
+}
+
+
+h3 {
+	color: #666;
+	text-shadow: 1px 1px 0 white;
+	font-weight: 300;
 }
 
 .center {
@@ -44,7 +108,7 @@ section {
 	height: 450px;
 }
 
-.starredWrapper {
+#starredWrapper {
 	max-height: 200px;
 }
 

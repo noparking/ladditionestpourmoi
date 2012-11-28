@@ -3,13 +3,18 @@ Meteor.startup(function () {
   // code to run on server at startup
   //process.env.MAIL_URL = 'smtp://postmaster%40ladditionestpourmoi.mailgun.org:4uqczccgs389@smtp.mailgun.org:587';
 });
-
+/*
 Meteor.publish('partialUsers', function(limit) {
   return Meteor.users.find({}, {limit: limit});
 });
+*/
+Meteor.publish("userData", function () {
+  return Meteor.users.find({_id: this.userId}, {fields: {admin: 1, starred: 1, profile: 1, emails: 1, validated: 1}});
+});
 
 Meteor.publish("allUserData", function () {
-  return Meteor.users.find({'profile.mentor':true, 'emails[0].verified':true}, {fields: {admin: 1, starred: 1, profile: 1}});
+  return Meteor.users.find({'profile.mentor': true}, {fields: {admin: 1, starred: 1, profile: 1, validated: 1}});
+//  return Meteor.users.find({'profile.mentor': true/*, 'emails[0].verified': true*/, 'validated': true}, {fields: {admin: 1, starred: 1, profile: 1, validated: 1}});
 });
 
 var sendInvitation = function (fromId, toId, msg) {

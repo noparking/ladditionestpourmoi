@@ -7,11 +7,12 @@ Meteor.startup(function () {
 });
 
 Meteor.subscribe('allUserData');
-
+Meteor.subscribe('userData');
+/*
 Meteor.autosubscribe(function() {
   Meteor.subscribe("partialUsers", Session.get("limit"));
 });
-
+*/
 Meteor.autorun(function () {
   if(!Session.equals('profile', '')) {
     $('#profileDialog').modal('show');  
@@ -26,7 +27,7 @@ Meteor.autorun(function () {
 
 Handlebars.registerHelper('bio', function (bio) {
   if(bio) return new Handlebars.SafeString(bio.replace(/\n/g, '<br />'));
-}); 
+});
 
 Handlebars.registerHelper('isAdmin', function (fn) {
   if(Meteor.user() && Meteor.user().admin)
@@ -39,18 +40,30 @@ Handlebars.registerHelper('isAdmin', function (fn) {
 // Users
 
 Template.users.users = function () {
-  return Meteor.users.find({_id: {$ne: Meteor.userId()}});
+  return Meteor.users.find({'profile.mentor': true, validated: true});
 };
-
+/*
 Template.users.events({
   'click #moreUsersButton': function () {
     Session.set('limit', Session.get('limit')+8);
   }
 });
+*/
 
-Template.users.rendered = function ( ) {
-  if($(".wrapper").length > 0)
+// Potential Users
+
+Template.potentialUsers.users = function () {
+  return Meteor.users.find({'profile.mentor': true, validated: { $exists: false }});
+};
+
+
+// User
+
+Template.user.rendered = function () {
+  if($(".wrapper").length > 0) {
     $(".wrapper").dotdotdot();
+//    console.log("wrapped", this);    
+  }
 };
 
 Template.user.events({
@@ -94,9 +107,34 @@ Template.starredProfile.user = function () {
   return Meteor.users.findOne({starred:true});
 };
 
-Template.starredProfile.rendered = function ( ) {
-  if($(".starredwrapper").length > 0)
-    $(".starredWrapper").dotdotdot();
+var query = Meteor.users.find({starred:true});
+console.log("q",query);
+var handle = query.observe({
+  added: function(user) {
+    console.log('added',user);
+  },
+  changed: function(user) {
+    console.log('chagnged',user);
+//    $(".sc").fadeIn();
+  }
+});
+
+
+Template.starredProfile.rendered = function () {
+//  console.log('render', this);
+  if(this.find("#starredWrapper")) {
+//  console.log('render2');
+    $("#starredWrapper").dotdotdot();
+//    $(".sc").animate({left: '+50%'}, 500);
+      $(".sc").fadeIn();
+  console.log("fade");
+    if(this.alreadyfadein === undefined) {
+      this.alreadyfadein = true;
+ //     console.log('first');
+    } else {
+//      console.log('alr');
+    }
+  }
 };
 
 Template.starredProfile.events({
@@ -175,15 +213,19 @@ Template.profileDialog.events({
   },
   'click #setAdmin' : function () {
     $('#profileDialog').modal('hide');
-    console.log(Meteor.users.findOne(Session.get("profile")));
     Meteor.users.update(Meteor.users.findOne(Session.get("profile")), { $set: { admin: true } });
-    console.log(Meteor.users.findOne(Session.get("profile")));
   },
   'click #unsetAdmin' : function () {
     $('#profileDialog').modal('hide');
-    console.log(Meteor.users.findOne(Session.get("profile")));
     Meteor.users.update(Meteor.users.findOne(Session.get("profile")), { $unset: { admin: 1 } });
-    console.log(Meteor.users.findOne(Session.get("profile")));
+  },
+  'click #setValidated' : function () {
+    $('#profileDialog').modal('hide');
+    Meteor.users.update(Meteor.users.findOne(Session.get("profile")), { $set: { validated: true } });
+  },
+  'click #unsetValidated' : function () {
+    $('#profileDialog').modal('hide');
+    Meteor.users.update(Meteor.users.findOne(Session.get("profile")), { $unset: { validated: 1 } });
   }
 });
 

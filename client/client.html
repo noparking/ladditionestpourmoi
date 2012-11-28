@@ -1,6 +1,10 @@
 <head>
   <title>L'addition est pour moi</title>
 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--   <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'> -->
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900' rel='stylesheet' type='text/css'>
+
   <script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-15752713-10']);
@@ -18,7 +22,7 @@
   <div id="navbarExample" class="navbar navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container">
-        <a class="brand" href="#">L'addition est pour moi</a>
+        <a class="logo" href="#">L<span class="add">+</span>addition est pour moi</a>
         <p class="navbar-text pull-right">{{loginButtons}}</p>
         <ul class="nav pull-right">
           <li><a href="#about">A propos</a></li>
@@ -61,6 +65,9 @@ TODO rework the texts
         {{> users}}
     </section>
 
+    {{#isAdmin}}
+      {{> potentialUsers}}
+    {{/isAdmin}}
     <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><hr/>
     <section id="about">
       <div class="row">
@@ -99,10 +106,24 @@ TODO rework the texts
 -->
 </template>
 
+<template name="potentialUsers">
+  <div class="row">
+    <h2>Les hôtes à valider</h2>
+    <ul class="thumbnails">
+      {{#each users}}
+        {{> user}}
+      {{/each}}
+    </ul>
+  </div>
+</template>
+
+
 <template name="user">
   <li class="span3">
     <div class="thumbnail user wrapper hand grad">
-        <img src="{{profile.picture}}?s=260" alt="{{profile.name}}"/>
+        {{#if profile.picture}}
+          <img src="{{profile.picture}}?s=260" alt="{{profile.name}}"/>
+        {{/if}}
         <div class="caption">
           <h3>{{profile.name}}</h3>
           <p><a href="http://twitter.com/{{profile.twitter}}">{{profile.twitter}}</a></p>
@@ -125,15 +146,15 @@ TODO rework the texts
 </template>
 
 <template name="starredProfile">
-  <div class="thumbnail grad hand">
-    {{#if user}}
+  {{#if user}}
+    <div class="thumbnail grad hand sc hide">
       {{#with user}}
         <img src="{{profile.picture}}?s=360" alt="{{profile.name}}"/>
         <div class="caption">
           <h3>{{profile.name}}</h3>
           <p><a href="http://twitter.com/{{profile.twitter}}">{{profile.twitter}}</a></p>
           <h4>{{profile.city}}</h4>
-          <p class="starredWrapper">{{bio profile.bio}}</p>
+          <p id="starredWrapper">{{bio profile.bio}}</p>
           <p class="center">
             {{#if currentUser}}
               <a class="btn btn-primary" id="inviteButton">L'inviter au restaurant</a>
@@ -143,8 +164,8 @@ TODO rework the texts
           </p>
         </div>
       {{/with}}
-    {{/if}}
-  </div>
+    </div>
+  {{/if}}
 </template>
 
 <template name="inviteDialog">
@@ -175,13 +196,27 @@ TODO rework the texts
     <div class="modal-body">
       <form>
           {{#isAdmin}}
-            {{#if user.admin}}
-              <button id="unsetAdmin" class="btn">Retirer l'admin</button>
-            {{else}}
-              <button id="setAdmin" class="btn">Passer admin</button>
-            {{/if}}
+            <div>
+              {{#if user.validated}}
+                <button id="unsetValidated" class="btn btn-danger">Invalider le profile</button>
+              {{else}}
+                <button id="setValidated" class="btn">Valider le profile</button>
+              {{/if}}
               <button id="setStarred" class="btn">Mettre à l'affiche</button>
+              {{#if user.admin}}
+                <button id="unsetAdmin" class="btn btn-danger">Retirer l'admin</button>
+              {{else}}
+                <button id="setAdmin" class="btn">Passer admin</button>
+              {{/if}}
+            </div>
           {{/isAdmin}}
+          {{#if user.profile.mentor}}
+            {{#if user.validated}}
+             <div class="alert alert-success"><strong>Info</strong>: Votre profil est validé et apparait dans la liste des mentors.</div>
+            {{else}}
+             <div class="alert"><strong>Info</strong>: Votre profil est en cours de validation par les modérateurs pour pouvoir être officiellement présenter dans la liste des mentors.</div>
+            {{/if}}
+          {{/if}}
           <label>Nom</label>
           <input id="profileName" class="span5" type="text" placeholder="Prénom Nom…" value="{{user.profile.name}}">
           <label>Ville</label>
@@ -191,7 +226,7 @@ TODO rework the texts
           <label>Twitter</label>
           <input id="profileTwitter" class="span5" type="text" placeholder="@username…" value="{{user.profile.twitter}}">
           <label class="checkbox">
-            <input id="profileMentor" {{mentorchecked}} type="checkbox" value="1"> Je veux être inscris comme mentor et pouvoir être invité à manger à l'oeil
+            <input id="profileMentor" {{mentorchecked}} type="checkbox" value="1"> Je désire partager mon experience et pouvoir être invité à manger à l'oeil
           </label>
           <label>Bio</label>
           <textarea id="profileBio" class="span5" rows="10">{{user.profile.bio}}</textarea>
