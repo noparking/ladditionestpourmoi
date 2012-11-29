@@ -58,6 +58,10 @@ a:hover.logo {
 	text-shadow: 0 0 15px #222;
 }
 
+
+.thumbnail {
+	overflow:hidden;
+}
 .thumbnail h3 {
 	margin-top: 0px;
 	margin-bottom: 0px;
@@ -132,3 +136,5 @@ h3 {
 		color-stop(0.59, rgb(255,255,255))
 	);
 }
+
+

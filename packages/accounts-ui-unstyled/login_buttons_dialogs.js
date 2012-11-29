@@ -1,4 +1,7 @@
 (function () {
+  // for convenience
+  var loginButtonsSession = Accounts._loginButtonsSession;
+
 
   //
   // populate the session so that the appropriate dialogs are
@@ -7,57 +10,12 @@
   // guaranteed to have these set at this point.
   //
 
-  // reads a reset password token from the url's hash fragment, if it's
-  // there. if so prevent automatically logging in since it could be
-  // confusing to be logged in as user A while resetting password for
-  // user B
-  //
-  // reset password urls use hash fragments instead of url paths/query
-  // strings so that the reset password token is not sent over the wire
-  // on the http request
-
-  var match;
-  match = window.location.hash.match(/^\#\/reset-password\/(.*)$/);
-  if (match) {
-
-    Accounts._preventAutoLogin = true;
-    Accounts._resetPasswordToken = match[1];
-    window.location.hash = '';
-  }
-
-  // reads a verify email token from the url's hash fragment, if
-  // it's there.  also don't automatically log the user is, as for
-  // reset password links.
-  //
-  // XXX we don't need to use hash fragments in this case, and having
-  // the token appear in the url's path would allow us to use a custom
-  // middleware instead of verifying the email on pageload, which
-  // would be faster but less DDP-ish (and more specifically, any
-  // non-web DDP app, such as an iOS client, would do something more
-  // in line with the hash fragment approach)
-  match = window.location.hash.match(/^\#\/verify-email\/(.*)$/);
-  if (match) {
-    Accounts._preventAutoLogin = true;
-    Accounts._verifyEmailToken = match[1];
-    window.location.hash = '';
-  }
-
-  // reads an account enrollment token from the url's hash fragment, if
-  // it's there.  also don't automatically log the user is, as for
-  // reset password links.
-  match = window.location.hash.match(/^\#\/enroll-account\/(.*)$/);
-  if (match) {
-    Accounts._preventAutoLogin = true;
-    Accounts._enrollAccountToken = match[1];
-    window.location.hash = '';
-  }
-
   if (Accounts._resetPasswordToken) {
-    Accounts._loginButtonsSession.set('resetPasswordToken', Accounts._resetPasswordToken);
+    loginButtonsSession.set('resetPasswordToken', Accounts._resetPasswordToken);
   }
 
   if (Accounts._enrollAccountToken) {
-    Accounts._loginButtonsSession.set('enrollAccountToken', Accounts._enrollAccountToken);
+    loginButtonsSession.set('enrollAccountToken', Accounts._enrollAccountToken);
   }
 
   // Needs to be in Meteor.startup because of a package loading order
@@ -68,7 +26,7 @@
       Accounts.verifyEmail(Accounts._verifyEmailToken, function(error) {
         Accounts._enableAutoLogin();
         if (!error)
-          Accounts._loginButtonsSession.set('justVerifiedEmail', true);
+          loginButtonsSession.set('justVerifiedEmail', true);
         // XXX show something if there was an error.
       });
     }
@@ -88,31 +46,31 @@
         resetPassword();
     },
     'click #login-buttons-cancel-reset-password': function () {
-      Accounts._loginButtonsSession.set('resetPasswordToken', null);
+      loginButtonsSession.set('resetPasswordToken', null);
       Accounts._enableAutoLogin();
     }
   });
 
   var resetPassword = function () {
-    Accounts._loginButtonsSession.resetMessages();
+    loginButtonsSession.resetMessages();
     var newPassword = document.getElementById('reset-password-new-password').value;
     if (!Accounts._loginButtons.validatePassword(newPassword))
       return;
 
     Accounts.resetPassword(
-      Accounts._loginButtonsSession.get('resetPasswordToken'), newPassword,
+      loginButtonsSession.get('resetPasswordToken'), newPassword,
       function (error) {
         if (error) {
-          Accounts._loginButtonsSession.set('errorMessage', error.reason || "Unknown error");
+          loginButtonsSession.errorMessage(error.reason || "Unknown error");
         } else {
-          Accounts._loginButtonsSession.set('resetPasswordToken', null);
+          loginButtonsSession.set('resetPasswordToken', null);
           Accounts._enableAutoLogin();
         }
       });
   };
 
   Template._resetPasswordDialog.inResetPasswordFlow = function () {
-    return Accounts._loginButtonsSession.get('resetPasswordToken');
+    return loginButtonsSession.get('resetPasswordToken');
   };
 
 
@@ -129,31 +87,31 @@
         enrollAccount();
     },
     'click #login-buttons-cancel-enroll-account': function () {
-      Accounts._loginButtonsSession.set('enrollAccountToken', null);
+      loginButtonsSession.set('enrollAccountToken', null);
       Accounts._enableAutoLogin();
     }
   });
 
   var enrollAccount = function () {
-    Accounts._loginButtonsSession.resetMessages();
+    loginButtonsSession.resetMessages();
     var password = document.getElementById('enroll-account-password').value;
     if (!Accounts._loginButtons.validatePassword(password))
       return;
 
     Accounts.resetPassword(
-      Accounts._loginButtonsSession.get('enrollAccountToken'), password,
+      loginButtonsSession.get('enrollAccountToken'), password,
       function (error) {
         if (error) {
-          Accounts._loginButtonsSession.set('errorMessage', error.reason || "Unknown error");
+          loginButtonsSession.errorMessage(error.reason || "Unknown error");
         } else {
-          Accounts._loginButtonsSession.set('enrollAccountToken', null);
+          loginButtonsSession.set('enrollAccountToken', null);
           Accounts._enableAutoLogin();
         }
       });
   };
 
   Template._enrollAccountDialog.inEnrollAccountFlow = function () {
-    return Accounts._loginButtonsSession.get('enrollAccountToken');
+    return loginButtonsSession.get('enrollAccountToken');
   };
 
 
@@ -163,12 +121,12 @@
 
   Template._justVerifiedEmailDialog.events({
     'click #just-verified-dismiss-button': function () {
-      Accounts._loginButtonsSession.set('justVerifiedEmail', false);
+      loginButtonsSession.set('justVerifiedEmail', false);
     }
   });
 
   Template._justVerifiedEmailDialog.visible = function () {
-    return Accounts._loginButtonsSession.get('justVerifiedEmail');
+    return loginButtonsSession.get('justVerifiedEmail');
   };
 
 
@@ -178,12 +136,12 @@
 
   Template._loginButtonsMessagesDialog.events({
     'click #messages-dialog-dismiss-button': function () {
-      Accounts._loginButtonsSession.resetMessages();
+      loginButtonsSession.resetMessages();
     }
   });
 
   Template._loginButtonsMessagesDialog.visible = function () {
-    var hasMessage = Accounts._loginButtonsSession.get('infoMessage') || Accounts._loginButtonsSession.get('errorMessage');
+    var hasMessage = loginButtonsSession.get('infoMessage') || loginButtonsSession.get('errorMessage');
     return !Accounts._loginButtons.dropdown() && hasMessage;
   };
 
@@ -194,13 +152,13 @@
 
   Template._configureLoginServiceDialog.events({
     'click .configure-login-service-dismiss-button': function () {
-      Accounts._loginButtonsSession.set('configureLoginServiceDialogVisible', false);
+      loginButtonsSession.set('configureLoginServiceDialogVisible', false);
     },
     'click #configure-login-service-dialog-save-configuration': function () {
-      if (Accounts._loginButtonsSession.get('configureLoginServiceDialogVisible') &&
-          ! Accounts._loginButtonsSession.get('configureLoginServiceDialogSaveDisabled')) {
+      if (loginButtonsSession.get('configureLoginServiceDialogVisible') &&
+          ! loginButtonsSession.get('configureLoginServiceDialogSaveDisabled')) {
         // Prepare the configuration document for this login service
-        var serviceName = Accounts._loginButtonsSession.get('configureLoginServiceDialogServiceName');
+        var serviceName = loginButtonsSession.get('configureLoginServiceDialogServiceName');
         var configuration = {
           service: serviceName
         };
@@ -215,7 +173,7 @@
           if (error)
             Meteor._debug("Error configuring login service " + serviceName, error);
           else
-            Accounts._loginButtonsSession.set('configureLoginServiceDialogVisible', false);
+            loginButtonsSession.set('configureLoginServiceDialogVisible', false);
         });
       }
     },
@@ -239,13 +197,13 @@
         'configure-login-service-dialog-' + field.property).value === '';
     });
 
-    Accounts._loginButtonsSession.set('configureLoginServiceDialogSaveDisabled', anyFieldEmpty);
+    loginButtonsSession.set('configureLoginServiceDialogSaveDisabled', anyFieldEmpty);
   };
 
   // Returns the appropriate template for this login service.  This
   // template should be defined in the service's package
   var configureLoginServiceDialogTemplateForService = function () {
-    var serviceName = Accounts._loginButtonsSession.get('configureLoginServiceDialogServiceName');
+    var serviceName = loginButtonsSession.get('configureLoginServiceDialogServiceName');
     return Template['configureLoginServiceDialogFor' + capitalize(serviceName)];
   };
 
@@ -259,7 +217,7 @@
   };
 
   Template._configureLoginServiceDialog.visible = function () {
-    return Accounts._loginButtonsSession.get('configureLoginServiceDialogVisible');
+    return loginButtonsSession.get('configureLoginServiceDialogVisible');
   };
 
   Template._configureLoginServiceDialog.configurationSteps = function () {
@@ -268,7 +226,7 @@
   };
 
   Template._configureLoginServiceDialog.saveDisabled = function () {
-    return Accounts._loginButtonsSession.get('configureLoginServiceDialogSaveDisabled');
+    return loginButtonsSession.get('configureLoginServiceDialogSaveDisabled');
   };
 
 
@@ -278,4 +236,4 @@
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
-})();
+}) ();

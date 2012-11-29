@@ -17,6 +17,8 @@ Meteor.publish("allUserData", function () {
 //  return Meteor.users.find({'profile.mentor': true/*, 'emails[0].verified': true*/, 'validated': true}, {fields: {admin: 1, starred: 1, profile: 1, validated: 1}});
 });
 
+Accounts.config({sendVerificationEmail: true});
+
 var sendInvitation = function (fromId, toId, msg) {
   var from = Meteor.users.findOne(fromId);
   var to = Meteor.users.findOne(toId);

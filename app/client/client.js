@@ -107,33 +107,35 @@ Template.starredProfile.user = function () {
   return Meteor.users.findOne({starred:true});
 };
 
+// it s a test to try to fade the starred user
 var query = Meteor.users.find({starred:true});
-console.log("q",query);
+//console.log("q",query);
 var handle = query.observe({
   added: function(user) {
-    console.log('added',user);
+//    console.log('added',user);
   },
   changed: function(user) {
-    console.log('chagnged',user);
+//    console.log('changed',user);
 //    $(".sc").fadeIn();
   }
 });
 
 
 Template.starredProfile.rendered = function () {
+// it s a test to try to fade the starred user
 //  console.log('render', this);
   if(this.find("#starredWrapper")) {
 //  console.log('render2');
     $("#starredWrapper").dotdotdot();
 //    $(".sc").animate({left: '+50%'}, 500);
-      $(".sc").fadeIn();
-  console.log("fade");
-    if(this.alreadyfadein === undefined) {
-      this.alreadyfadein = true;
+//      $(".sc").fadeIn();
+//  console.log("fade");
+//    if(this.alreadyfadein === undefined) {
+ //     this.alreadyfadein = true;
  //     console.log('first');
-    } else {
+ //   } else {
 //      console.log('alr');
-    }
+ //   }
   }
 };
 
@@ -167,7 +169,7 @@ Template.inviteDialog.events({
 
 Template.profileDialog.mentorchecked = function () {
   var user = Meteor.users.findOne(Session.get("profile"));
-  if(user && user.profile.mentor)
+  if(user && user.profile && user.profile.mentor)
     return 'checked="checked"';
   else return '';
 };

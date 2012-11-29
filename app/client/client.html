@@ -23,7 +23,7 @@
     <div class="navbar-inner">
       <div class="container">
         <a class="logo" href="#">L<span class="add">+</span>addition est pour moi</a>
-        <p class="navbar-text pull-right">{{loginButtons}}</p>
+        <p class="navbar-text pull-right">{{loginButtons align="right"}}</p>
         <ul class="nav pull-right">
           <li><a href="#about">A propos</a></li>
           <li><a href="#users">Les hôtes</a></li>
@@ -147,7 +147,7 @@ TODO rework the texts
 
 <template name="starredProfile">
   {{#if user}}
-    <div class="thumbnail grad hand sc hide">
+    <div class="thumbnail grad hand sc">
       {{#with user}}
         <img src="{{profile.picture}}?s=360" alt="{{profile.name}}"/>
         <div class="caption">

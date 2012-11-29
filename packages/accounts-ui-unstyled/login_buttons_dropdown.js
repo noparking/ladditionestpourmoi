@@ -1,15 +1,17 @@
 (function () {
+  // for convenience
+  var loginButtonsSession = Accounts._loginButtonsSession;
 
   // events shared between loginButtonsLoggedOutDropdown and
   // loginButtonsLoggedInDropdown
   Template._loginButtons.events({
     'click #login-name-link, click #login-sign-in-link': function () {
-      Accounts._loginButtonsSession.set('dropdownVisible', true);
+      loginButtonsSession.set('dropdownVisible', true);
       Meteor.flush();
       correctDropdownZIndexes();
     },
     'click .login-close-text': function () {
-      Accounts._loginButtonsSession.closeDropdown();
+      loginButtonsSession.closeDropdown();
     }
   });
 
@@ -20,12 +22,12 @@
 
   Template._loginButtonsLoggedInDropdown.events({
     'click #login-buttons-open-change-password': function() {
-      Accounts._loginButtonsSession.resetMessages();
-      Accounts._loginButtonsSession.set('inChangePasswordFlow', true);
+      loginButtonsSession.resetMessages();
+      loginButtonsSession.set('inChangePasswordFlow', true);
     },
     'click #login-buttons-open-change-profile': function() {
       Session.set('profile', Meteor.userId());
-      Accounts._loginButtonsSession.closeDropdown();
+      loginButtonsSession.closeDropdown();
     }
   });
 
@@ -34,15 +36,15 @@
   };
 
   Template._loginButtonsLoggedInDropdown.inChangePasswordFlow = function () {
-    return Accounts._loginButtonsSession.get('inChangePasswordFlow');
+    return loginButtonsSession.get('inChangePasswordFlow');
   };
 
   Template._loginButtonsLoggedInDropdown.inMessageOnlyFlow = function () {
-    return Accounts._loginButtonsSession.get('inMessageOnlyFlow');
+    return loginButtonsSession.get('inMessageOnlyFlow');
   };
 
   Template._loginButtonsLoggedInDropdown.dropdownVisible = function () {
-    return Accounts._loginButtonsSession.get('dropdownVisible');
+    return loginButtonsSession.get('dropdownVisible');
   };
 
   Template._loginButtonsLoggedInDropdownActions.allowChangingPassword = function () {
@@ -75,7 +77,7 @@
     },
 
     'click #signup-link': function () {
-      Accounts._loginButtonsSession.resetMessages();
+      loginButtonsSession.resetMessages();
 
       // store values of fields before swtiching to the signup form
       var username = trimmedElementValueById('login-username');
@@ -84,8 +86,8 @@
       // notably not trimmed. a password could (?) start or end with a space
       var password = elementValueById('login-password');
 
-      Accounts._loginButtonsSession.set('inSignupFlow', true);
-      Accounts._loginButtonsSession.set('inForgotPasswordFlow', false);
+      loginButtonsSession.set('inSignupFlow', true);
+      loginButtonsSession.set('inForgotPasswordFlow', false);
       // force the ui to update so that we have the approprate fields to fill in
       Meteor.flush();
 
@@ -99,7 +101,7 @@
           document.getElementById('login-username').value = usernameOrEmail;
       else
         document.getElementById('login-email').value = usernameOrEmail;
-      // "login-password" is preserved thanks to the preserve-inputs package
+      // "login-password" is preserved, since password fields aren't updated by Spark.
 
       // Force redrawing the `login-dropdown-list` element because of
       // a bizarre Chrome bug in which part of the DIV is not redrawn
@@ -114,14 +116,14 @@
       redraw.style.display = 'block';
     },
     'click #forgot-password-link': function () {
-      Accounts._loginButtonsSession.resetMessages();
+      loginButtonsSession.resetMessages();
 
       // store values of fields before swtiching to the signup form
       var email = trimmedElementValueById('login-email');
       var usernameOrEmail = trimmedElementValueById('login-username-or-email');
 
-      Accounts._loginButtonsSession.set('inSignupFlow', false);
-      Accounts._loginButtonsSession.set('inForgotPasswordFlow', true);
+      loginButtonsSession.set('inSignupFlow', false);
+      loginButtonsSession.set('inForgotPasswordFlow', true);
       // force the ui to update so that we have the approprate fields to fill in
       Meteor.flush();
 
@@ -134,14 +136,14 @@
 
     },
     'click #back-to-login-link': function () {
-      Accounts._loginButtonsSession.resetMessages();
+      loginButtonsSession.resetMessages();
 
       var username = trimmedElementValueById('login-username');
       var email = trimmedElementValueById('login-email')
             || trimmedElementValueById('forgot-password-email'); // Ughh. Standardize on names?
 
-      Accounts._loginButtonsSession.set('inSignupFlow', false);
-      Accounts._loginButtonsSession.set('inForgotPasswordFlow', false);
+      loginButtonsSession.set('inSignupFlow', false);
+      loginButtonsSession.set('inForgotPasswordFlow', false);
       // force the ui to update so that we have the approprate fields to fill in
       Meteor.flush();
 
@@ -149,7 +151,7 @@
         document.getElementById('login-username').value = username;
       if (document.getElementById('login-email'))
         document.getElementById('login-email').value = email;
-      // "login-password" is preserved thanks to the preserve-inputs package
+      // "login-password" is preserved, since password fields aren't updated by Spark.
       if (document.getElementById('login-username-or-email'))
         document.getElementById('login-username-or-email').value = email || username;
     },
@@ -164,9 +166,9 @@
     if (!Accounts.password) {
       return false;
     } else {
-      if (Accounts._loginButtonsSession.get('inSignupFlow')) {
+      if (loginButtonsSession.get('inSignupFlow')) {
         return 'login-form-create-account';
-      } else if (Accounts._loginButtonsSession.get('inForgotPasswordFlow')) {
+      } else if (loginButtonsSession.get('inForgotPasswordFlow')) {
         return 'login-form-forgot-password';
       } else {
         return 'login-form-sign-in';
@@ -175,7 +177,7 @@
   };
 
   Template._loginButtonsLoggedOutDropdown.dropdownVisible = function () {
-    return Accounts._loginButtonsSession.get('dropdownVisible');
+    return loginButtonsSession.get('dropdownVisible');
   };
 
   Template._loginButtonsLoggedOutDropdown.hasPasswordService = function () {
@@ -253,19 +255,23 @@
        }}
     ];
 
-    return Accounts._loginButtonsSession.get('inSignupFlow') ? signupFields : loginFields;
+    return loginButtonsSession.get('inSignupFlow') ? signupFields : loginFields;
   };
 
   Template._loginButtonsLoggedOutPasswordService.inForgotPasswordFlow = function () {
-    return Accounts._loginButtonsSession.get('inForgotPasswordFlow');
+    return loginButtonsSession.get('inForgotPasswordFlow');
   };
 
   Template._loginButtonsLoggedOutPasswordService.inLoginFlow = function () {
-    return !Accounts._loginButtonsSession.get('inSignupFlow') && !Accounts._loginButtonsSession.get('inForgotPasswordFlow');
+    return !loginButtonsSession.get('inSignupFlow') && !loginButtonsSession.get('inForgotPasswordFlow');
   };
 
   Template._loginButtonsLoggedOutPasswordService.inSignupFlow = function () {
-    return Accounts._loginButtonsSession.get('inSignupFlow');
+    return loginButtonsSession.get('inSignupFlow');
+  };
+
+  Template._loginButtonsLoggedOutPasswordService.showCreateAccountLink = function () {
+    return !Accounts._options.forbidClientAccountCreation;
   };
 
   Template._loginButtonsLoggedOutPasswordService.showForgotPasswordLink = function () {
@@ -338,14 +344,14 @@
   };
 
   var loginOrSignup = function () {
-    if (Accounts._loginButtonsSession.get('inSignupFlow'))
+    if (loginButtonsSession.get('inSignupFlow'))
       signup();
     else
       login();
   };
 
   var login = function () {
-    Accounts._loginButtonsSession.resetMessages();
+    loginButtonsSession.resetMessages();
 
     var username = trimmedElementValueById('login-username');
     var email = trimmedElementValueById('login-email');
@@ -377,15 +383,15 @@
 
     Meteor.loginWithPassword(loginSelector, password, function (error, result) {
       if (error) {
-        Accounts._loginButtonsSession.set('errorMessage', error.reason || "Erreur iÒnconnue");
+        loginButtonsSession.errorMessage(error.reason || "Unknown error");
       } else {
-        Accounts._loginButtonsSession.closeDropdown();
+        loginButtonsSession.closeDropdown();
       }
     });
   };
 
   var signup = function () {
-    Accounts._loginButtonsSession.resetMessages();
+    loginButtonsSession.resetMessages();
 
     var options = {}; // to be passed to Accounts.createUser
 
@@ -417,31 +423,31 @@
 
     Accounts.createUser(options, function (error) {
       if (error) {
-        Accounts._loginButtonsSession.set('errorMessage', error.reason || "Erreur inconnue");
+        loginButtonsSession.errorMessage(error.reason || "Unknown error");
       } else {
-        Accounts._loginButtonsSession.closeDropdown();
+        loginButtonsSession.closeDropdown();
       }
     });
   };
 
   var forgotPassword = function () {
-    Accounts._loginButtonsSession.resetMessages();
+    loginButtonsSession.resetMessages();
 
     var email = trimmedElementValueById("forgot-password-email");
     if (email.indexOf('@') !== -1) {
       Accounts.forgotPassword({email: email}, function (error) {
         if (error)
-          Accounts._loginButtonsSession.set('errorMessage', error.reason || "Erreur inconnue");
+          loginButtonsSession.errorMessage(error.reason || "Unknown error");
         else
-          Accounts._loginButtonsSession.set('infoMessage', "Email envoyé");
+          loginButtonsSession.infoMessage("Email envoyé");
       });
     } else {
-      Accounts._loginButtonsSession.set('errorMessage', "Email invalide");
+      loginButtonsSession.errorMessage("Email invalide");
     }
   };
 
   var changePassword = function () {
-    Accounts._loginButtonsSession.resetMessages();
+    loginButtonsSession.resetMessages();
 
     // notably not trimmed. a password could (?) start or end with a space
     var oldPassword = elementValueById('login-old-password');
@@ -456,11 +462,11 @@
 
     Accounts.changePassword(oldPassword, password, function (error) {
       if (error) {
-        Accounts._loginButtonsSession.set('errorMessage', error.reason || "Erreur iconnue");
+        loginButtonsSession.errorMessage(error.reason || "Unknown error");
       } else {
-        Accounts._loginButtonsSession.set('inChangePasswordFlow', false);
-        Accounts._loginButtonsSession.set('inMessageOnlyFlow', true);
-        Accounts._loginButtonsSession.set('infoMessage', "Mot de passe changé");
+        loginButtonsSession.set('inChangePasswordFlow', false);
+        loginButtonsSession.set('inMessageOnlyFlow', true);
+        loginButtonsSession.infoMessage("Mot de passe changé");
       }
     });
   };
@@ -472,7 +478,7 @@
       // notably not trimmed. a password could (?) start or end with a space
       var password = elementValueById('login-password');
       if (password !== passwordAgain) {
-        Accounts._loginButtonsSession.set('errorMessage', "Les mots de passe ne correspondent pas");
+        loginButtonsSession.errorMessage("Les mots de passe ne correspondent pas");
         return false;
       }
     }

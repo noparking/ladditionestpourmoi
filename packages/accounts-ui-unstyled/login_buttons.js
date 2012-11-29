@@ -2,20 +2,23 @@
   if (!Accounts._loginButtons)
     Accounts._loginButtons = {};
 
+  // for convenience
+  var loginButtonsSession = Accounts._loginButtonsSession;
+
   Handlebars.registerHelper(
     "loginButtons",
     function (options) {
       if (options.hash.align === "right")
-        return new Handlebars.SafeString(Template._loginButtonsRight());
+        return new Handlebars.SafeString(Template._loginButtons({align: "right"}));
       else
-        return new Handlebars.SafeString(Template._loginButtonsLeft());
+        return new Handlebars.SafeString(Template._loginButtons({align: "left"}));
     });
 
   // shared between dropdown and single mode
   Template._loginButtons.events({
     'click #login-buttons-logout': function() {
       Meteor.logout(function () {
-        Accounts._loginButtonsSession.closeDropdown();
+        loginButtonsSession.closeDropdown();
       });
     }
   });
@@ -59,7 +62,13 @@
     return Accounts._loginButtons.dropdown();
   };
 
-  Template._loginButtonsLoggedIn.displayName = function () {
+
+
+  //
+  // loginButtonsLoggedInSingleLogoutButton template
+  //
+
+  Template._loginButtonsLoggedInSingleLogoutButton.displayName = function () {
     return Accounts._loginButtons.displayName();
   };
 
@@ -70,11 +79,20 @@
   //
 
   Template._loginButtonsMessages.errorMessage = function () {
-    return Accounts._loginButtonsSession.get('errorMessage');
+    return loginButtonsSession.get('errorMessage');
   };
 
   Template._loginButtonsMessages.infoMessage = function () {
-    return Accounts._loginButtonsSession.get('infoMessage');
+    return loginButtonsSession.get('infoMessage');
+  };
+
+
+  //
+  // loginButtonsLoggingInPadding template
+  //
+
+  Template._loginButtonsLoggingInPadding.dropdown = function () {
+    return Accounts._loginButtons.dropdown();
   };
 
 
@@ -127,7 +145,7 @@
     if (username.length >= 3) {
       return true;
     } else {
-      Accounts._loginButtonsSession.set('errorMessage', "Username must be at least 3 characters long");
+      loginButtonsSession.errorMessage("Le nom d'utilisateur doit avoir au moins 3 caractères");
       return false;
     }
   };
@@ -138,15 +156,15 @@
     if (email.indexOf('@') !== -1) {
       return true;
     } else {
-      Accounts._loginButtonsSession.set('errorMessage', "Email invalide");
+      loginButtonsSession.errorMessage("Email invalide");
       return false;
     }
   };
   Accounts._loginButtons.validatePassword = function (password) {
-    if (password.length >= 4) {
+    if (password.length >= 6) {
       return true;
     } else {
-      Accounts._loginButtonsSession.set('errorMessage', "Votre mot de passe doit avoir au moins 4 caractères de long");
+      loginButtonsSession.errorMessage("Le mot de passe doit avoir au moins 6 caractères");
       return false;
     }
   };
