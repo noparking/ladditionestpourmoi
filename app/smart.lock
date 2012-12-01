@@ -11,7 +11,8 @@
       },
       "fr-accounts-ui-unstyled": {
         "path": "../packages/accounts-ui-unstyled"
-      }
+      },
+      "router": {}
     },
     "packages": {
       "fr-accounts-ui": {
@@ -19,6 +20,16 @@
       },
       "fr-accounts-ui-unstyled": {
         "path": "../packages/accounts-ui-unstyled"
+      },
+      "router": {
+        "git": "https://github.com/tmeasday/meteor-router.git",
+        "tag": "v0.2.6",
+        "commit": "a1866908a9fb6d287bb877c6583cee93f89e378e"
+      },
+      "page-js": {
+        "git": "https://github.com/tmeasday/meteor-page-js.git",
+        "tag": "v1.3.1",
+        "commit": "ee0b651869928abe50b5d06d7f32ccd2e657883a"
       }
     }
   }

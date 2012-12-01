@@ -91,6 +91,15 @@ a:hover.logo {
 	font-weight: 200;
 }
 
+.about p {
+	font-size: 18px;
+	line-height: 30px;
+	color: #666;
+	text-shadow: 1px 1px 0 white;
+	font-weight: 400;
+}
+
+
 h2 {
 	color: #444;
 	text-shadow: 1px 1px 0 white;
@@ -116,6 +125,20 @@ h3 {
 	max-height: 200px;
 }
 
+.tag {
+	cursor: default;
+	cursor: default;
+}
+
+.bigtag {
+	font-size: 16px;
+	line-height: 20px;
+	cursor: default;
+	cursor: default;
+	margin-bottom: 10px;
+	margin-right: 5px;
+}
+
 .hand {
 	cursor: hand;
 	cursor: pointer;
@@ -137,4 +160,10 @@ h3 {
 	);
 }
 
+.footer {
+	padding: 70px 0;
+	margin-top: 70px;
+	border-top: 1px solid #E5E5E5;
+	background-color: #EEE;
+}
 

@@ -3,7 +3,12 @@
     "branch": "master"
   },
   "packages": {
-    "fr-accounts-ui": { "path": "../packages/accounts-ui" },
-    "fr-accounts-ui-unstyled": { "path": "../packages/accounts-ui-unstyled" }
+    "fr-accounts-ui": {
+      "path": "../packages/accounts-ui"
+    },
+    "fr-accounts-ui-unstyled": {
+      "path": "../packages/accounts-ui-unstyled"
+    },
+    "router": {}
   }
 }

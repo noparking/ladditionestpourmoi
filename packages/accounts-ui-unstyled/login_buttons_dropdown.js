@@ -26,7 +26,7 @@
       loginButtonsSession.set('inChangePasswordFlow', true);
     },
     'click #login-buttons-open-change-profile': function() {
-      Session.set('profile', Meteor.userId());
+      Meteor.Router.to('/profile/' + Meteor.userId() + '/edit');
       loginButtonsSession.closeDropdown();
     }
   });
@@ -425,6 +425,7 @@
       if (error) {
         loginButtonsSession.errorMessage(error.reason || "Unknown error");
       } else {
+        Session.set('profile', Meteor.userId());
         loginButtonsSession.closeDropdown();
       }
     });

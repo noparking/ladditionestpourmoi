@@ -13,9 +13,17 @@ Meteor.publish("userData", function () {
 });
 
 Meteor.publish("allUserData", function () {
-  return Meteor.users.find({'profile.mentor': true}, {fields: {admin: 1, starred: 1, profile: 1, validated: 1}});
+  if(this.userId && Meteor.users.findOne(this.userId).admin)
+    return Meteor.users.find({}, {fields: {emails:1, admin: 1, starred: 1, profile: 1, validated: 1}});
+  else
+    return Meteor.users.find({'profile.mentor': true}, {fields: {admin: 1, starred: 1, profile: 1, validated: 1}});
 //  return Meteor.users.find({'profile.mentor': true/*, 'emails[0].verified': true*/, 'validated': true}, {fields: {admin: 1, starred: 1, profile: 1, validated: 1}});
 });
+
+Meteor.publish("tags", function () {
+  return Tags.find();
+});
+
 
 Accounts.config({sendVerificationEmail: true});
 
@@ -29,6 +37,7 @@ var sendInvitation = function (fromId, toId, msg) {
     "Bonjour "+to.profile.name+",\n\n"+
     "Vous êtes inscrit à L'addition est pour moi et "+from.profile.name+" vient juste de vous inviter au restaurant !\n\n"+
     "Voici ce qu'il a à vous dire pour vous convaincre d'accepter son invitation :\n\n\n"+msg+"\n\n\n"+
+    "Voici maintenant sont profile qui vous permettra d'en connaitre un peu plus sur "+from.profile.name+" :\n\n\n"+from.profile.bio+"\n\n\n"+
     "Vous pouvez désormais lui répondre directement, en espérant que vous trouvriez tous les deux l'expérience interessante.\n\n"+
     "Merci d'utiliser L'addition est pour moi !\n\n"+
     "L'équipe de L'addition est pour moi.\n"+
