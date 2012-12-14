@@ -26,7 +26,7 @@
         <p class="navbar-text pull-right">{{loginButtons align="right"}}</p>
         <ul class="nav pull-right">
           <li><a href="/"></a></li>
-          <li><a href="/about">A propos</a></li>
+          <li><a href="/about">À propos</a></li>
           <li><a href="/users">Les hôtes</a></li>
         </ul>
       </div>
@@ -39,7 +39,7 @@
   {{> inviteDialog}}
   <footer class="footer">
     <div class="container">
-      <p>Développer par <b><a href="http://ploki.info">Vianney Lecroart</a></b> et <b><a href="http://www.noparking.net">No Parking</a></b> grace à <a href="http://www.meteor.com">Meteor</a>.</p>
+      <p>Développé par <b><a href="http://ploki.info">Vianney Lecroart</a></b> et <b><a href="http://www.noparking.net">No Parking</a></b> grâce à <a href="http://www.meteor.com">Meteor</a>.</p>
       <p>Le projet est libre sous licence AGPLv3, le code souce est disponible sur <a href="https://github.com/noparking/ladditionestpourmoi">GitHub</a>.</p>
       <p>Vous pouvez nous rapporter problèmes et idées sur <a href="https://github.com/noparking/ladditionestpourmoi/issues">GitHub</a>.</p>
     </div>
@@ -80,10 +80,10 @@ Ce repas peut devenir l'occasion idéale d'échanger sur les problématiques de 
 <template name="aboutPage">
   <div class="row about">
     <div class="offset2 span8">
-      <h2>A propos</h2>
+      <h2>À propos</h2>
       <div class="row">
         <div class="span5">
-          <p><span class="label">L'addition est pour moi</span> est une initiative de <b><a href="http://ploki.info">Vianney Lecroart</a></b> et de la société <b>No Parking</b>, éditrice du <a href="http://opentime.fr/">logiciel de gestion du temps et de suivi d'ativités <b>Opentime</b></a>.</p>
+          <p><span class="label">L'addition est pour moi</span> est une initiative de <b><a href="http://ploki.info">Vianney Lecroart</a></b> et de la société <b>No Parking</b>, éditrice du <a href="http://opentime.fr/">logiciel de gestion du temps et de suivi d'activités <b>Opentime</b></a>.</p>
         </div>
         <div class="span3">
           <a href="http://opentime.fr/"><img src="http://ladditionestpourmoi.fr/medias/images/logo-opentime-250x125.png" class="img-rounded"/></a>
@@ -112,7 +112,7 @@ Ce repas peut devenir l'occasion idéale d'échanger sur les problématiques de 
   </div>
 <!--  <div class="row">
     <div class="offset5 span4">
-      <a class="btn" id="moreUsersButton">Voir davantage de profiles</a>
+      <a class="btn" id="moreUsersButton">Voir davantage de profils</a>
     </div>
   </div>
 -->
@@ -152,9 +152,9 @@ Ce repas peut devenir l'occasion idéale d'échanger sur les problématiques de 
 
 <template name="welcome">
   <div class="offset1 span6 welcome center">
-    <h1>Invitez des entrepreneurs experimentés au restaurant !</h1>
-    <p>Vous avez de l'<b>experience</b> dans un domaine et vous voulez la <b>partager</b> autour d'un bon repas offert ?</p>
-    <p>Vous avez un <b>problème</b> précis et vous êtes prêts à payer un restaurant pour en discuter avec une <b>entrepreneur experimenté</b> ?</p>
+    <h1>Invitez des entrepreneurs expérimentés au restaurant !</h1>
+    <p>Vous avez de l'<b>expérience</b> dans un domaine et vous voulez la <b>partager</b> autour d'un bon repas offert ?</p>
+    <p>Vous avez un <b>problème</b> précis et vous êtes prêts à payer un restaurant pour en discuter avec un <b>entrepreneur expérimenté</b> ?</p>
     {{#if currentUser}}
       <p><a class="btn btn-large btn-success" href="/users">Affichez la liste des hôtes disponibles !</a></p>
     {{else}}
@@ -236,7 +236,7 @@ Ce repas peut devenir l'occasion idéale d'échanger sur les problématiques de 
       </form>
     </div>
     <div class="modal-footer">
-      <button id="deleteTag" class="btn btn-danger">Detruire le badge</button>
+      <button id="deleteTag" class="btn btn-danger">Détruire le badge</button>
       <button class="btn" data-dismiss="modal" aria-hidden="true">Annuler</button>
       <button id="saveTag" class="btn btn-primary">Sauver</button>
     </div>
@@ -252,9 +252,9 @@ Ce repas peut devenir l'occasion idéale d'échanger sur les problématiques de 
           {{#isAdmin}}
             <div>
               {{#if user.validated}}
-                <button type="button" id="unsetValidated" class="btn btn-danger">Invalider le profile</button>
+                <button type="button" id="unsetValidated" class="btn btn-danger">Invalider le profil</button>
               {{else}}
-                <button type="button" id="setValidated" class="btn">Valider le profile</button>
+                <button type="button" id="setValidated" class="btn">Valider le profil</button>
               {{/if}}
               <button type="button" id="setStarred" class="btn">Mettre à l'affiche</button>
               {{#if user.admin}}
@@ -267,9 +267,9 @@ Ce repas peut devenir l'occasion idéale d'échanger sur les problématiques de 
           {{/isAdmin}}
           {{#if user.profile.mentor}}
             {{#if user.validated}}
-             <div class="alert alert-success"><strong>Info</strong>: Votre profil est validé et apparait dans la liste des personnes souhaitant être invités.</div>
+             <div class="alert alert-success"><strong>Info</strong>: Votre profil est validé et apparaît dans la liste des personnes souhaitant être invités.</div>
             {{else}}
-             <div class="alert"><strong>Info</strong>: Votre profil est en cours de validation par les modérateurs. Une fois validé, il apparaitra dans la liste des personnes souhaitant être invités.</div>
+             <div class="alert"><strong>Info</strong>: Votre profil est en cours de validation par les modérateurs. Une fois validé, il apparaîtra dans la liste des personnes souhaitant être invitées.</div>
             {{/if}}
           {{/if}}
           <label>Nom</label>
@@ -281,7 +281,7 @@ Ce repas peut devenir l'occasion idéale d'échanger sur les problématiques de 
           <label>Twitter</label>
           <input id="profileTwitter" class="span5" type="text" placeholder="@username" value="{{user.profile.twitter}}">
           <label class="checkbox">
-            <input id="profileMentor" {{mentorchecked}} type="checkbox" value="1"> Je désire partager mon experience et apparaître dans la liste des entrepreneurs pouvant être invités.
+            <input id="profileMentor" {{mentorchecked}} type="checkbox" value="1"> Je désire partager mon expérience et apparaître dans la liste des entrepreneurs pouvant être invités.
           </label>
           <legend>Badges</legend>
           <div class="item-tags">
@@ -302,11 +302,11 @@ Ce repas peut devenir l'occasion idéale d'échanger sur les problématiques de 
             {{/if}}
           </div>
           <legend>Biographie</legend>
-          <span class="help-block">Décrivez vos experiences et compétences qui pourraient interesser d'autres entrepreneurs.</span>
+          <span class="help-block">Décrivez vos expériences et compétences qui pourraient intéresser d'autres entrepreneurs.</span>
           <textarea id="profileBio" class="span7" rows="20">{{user.profile.bio}}</textarea>
         </form>
         <div class="form-actions">
-          <button type="button" id="saveProfile" class="btn btn-primary">Enregistrer votre profile</button>
+          <button type="button" id="saveProfile" class="btn btn-primary">Enregistrer votre profil</button>
         </div>
       </div>
     </div>
@@ -337,7 +337,7 @@ Ce repas peut devenir l'occasion idéale d'échanger sur les problématiques de 
         {{#if currentUser}}
           <a class="invite btn btn-primary" ahref="#">L'inviter au restaurant</a> 
           {{#isAdmin}}
-            <a class="edit btn" href="/profile/{{user._id}}/edit">Editer le profile</a> 
+            <a class="edit btn" href="/profile/{{user._id}}/edit">Éditer le profil</a> 
           {{/isAdmin}}
         {{else}}
           <a class="btn disabled">Inscrivez-vous pour l'inviter</a>

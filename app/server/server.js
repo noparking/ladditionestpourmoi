@@ -37,8 +37,8 @@ var sendInvitation = function (fromId, toId, msg) {
     "Bonjour "+to.profile.name+",\n\n"+
     "Vous êtes inscrit à L'addition est pour moi et "+from.profile.name+" vient juste de vous inviter au restaurant !\n\n"+
     "Voici ce qu'il a à vous dire pour vous convaincre d'accepter son invitation :\n\n\n"+msg+"\n\n\n"+
-    "Voici maintenant sont profile qui vous permettra d'en connaitre un peu plus sur "+from.profile.name+" :\n\n\n"+from.profile.bio+"\n\n\n"+
-    "Vous pouvez désormais lui répondre directement, en espérant que vous trouvriez tous les deux l'expérience interessante.\n\n"+
+    "Voici maintenant son profil qui vous permettra d'en connaître un peu plus sur "+from.profile.name+" :\n\n\n"+from.profile.bio+"\n\n\n"+
+    "Vous pouvez désormais lui répondre directement, en espérant que vous trouverez tous les deux l'expérience intéressante.\n\n"+
     "Merci d'utiliser L'addition est pour moi !\n\n"+
     "L'équipe de L'addition est pour moi.\n"+
     Meteor.absoluteUrl()+"\n";
@@ -57,7 +57,7 @@ var sendInvitation = function (fromId, toId, msg) {
     to: "acemtp@gmail.com",
     replyTo: fromEmail || undefined,
     subject: "L'addition est pour moi: "+from.profile.name+" a invité "+to.profile.name+" au restaurant !",
-    text: from.profile.name+" a invité "+to.profile.name+" au restaurant !\n\nVoici le mail qui a été envoié:\n\n\n"+txt
+    text: from.profile.name+" a invité "+to.profile.name+" au restaurant !\n\nVoici l'email qui a été envoyé:\n\n\n"+txt
   });
 }
 
