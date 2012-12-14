@@ -53,8 +53,8 @@ var sendInvitation = function (fromId, toId, msg) {
     "Bonjour "+to.profile.name+",\n\n"+
     "Vous êtes inscrit à L'addition est pour moi et "+from.profile.name+" vient juste de vous inviter au restaurant !\n\n"+
     "Voici ce qu'il a à vous dire pour vous convaincre d'accepter son invitation :\n\n\n"+msg+"\n\n\n"+
-    "Voici maintenant sont profile qui vous permettra d'en connaitre un peu plus sur "+from.profile.name+" :\n\n\n"+from.profile.bio+"\n\n\n"+
-    "Vous pouvez désormais lui répondre directement, en espérant que vous trouvriez tous les deux l'expérience interessante.\n\n"+
+    "Voici maintenant son profil qui vous permettra d'en connaître un peu plus sur "+from.profile.name+" :\n\n\n"+from.profile.bio+"\n\n\n"+
+    "Vous pouvez désormais lui répondre directement, en espérant que vous trouverez tous les deux l'expérience intéressante.\n\n"+
     "Merci d'utiliser L'addition est pour moi !\n\n"+
     "L'équipe de L'addition est pour moi.\n"+
     Meteor.absoluteUrl()+"\n";
@@ -72,7 +72,7 @@ var sendInvitation = function (fromId, toId, msg) {
     to: "acemtp@gmail.com",
     replyTo: fromEmail || undefined,
     subject: "L'addition est pour moi: "+from.profile.name+" a invité "+to.profile.name+" au restaurant !",
-    text: from.profile.name+" a invité "+to.profile.name+" au restaurant !\n\nVoici le mail qui a été envoié:\n\n\n"+txt
+    text: from.profile.name+" a invité "+to.profile.name+" au restaurant !\n\nVoici l'email qui a été envoyé:\n\n\n"+txt
   });
 }
 
@@ -97,9 +97,9 @@ var m = function (id, msg) {
 
 
 var adminMsg = {
-  noPic: "Pour pouvoir valider votre profile, vous devez y mettre une photo de vous. Une photo rend votre profile beaucoup plus humain",
-  noBio: "Pour pouvoir valider votre profile, vous devez y mettre une biographie. C'est le seul moyen pour ceux qui veulent vous inviter de savoir ce que vous faites",
-  noTag: "Vous devriez ajouter des tags à votre profile. C'est un moyen simple pour vous trouver facilement en utiliser les filtres et afficher en un coup d'oeil les domaines que vous maitrisez",
+  noPic: "Pour pouvoir valider votre profil, vous devez y mettre une photo de vous. Une photo rend votre profil beaucoup plus humain",
+  noBio: "Pour pouvoir valider votre profil, vous devez y mettre une biographie. C'est le seul moyen pour ceux qui veulent vous inviter de savoir ce que vous faites",
+  noTag: "Vous devriez ajouter des tags à votre profil. C'est un moyen simple pour vous trouver facilement en utiliser les filtres et afficher en un coup d'oeil les domaines que vous maitrisez",
 };
 
 var sendAdminMail = function (fromId, toId, msgId) {
@@ -111,9 +111,9 @@ var sendAdminMail = function (fromId, toId, msgId) {
   var txt =
     "Bonjour "+to.profile.name+",\n\n"+
     "Je tenais à vous remercier de vous être inscrit à L'addition est pour moi ! Ce projet ne peut marcher que grace à vous !\n\n"+
-    "Nous sommes persuadé pour que ce projet fonctionne, la qualité des personnes s'y trouvant est primordiale. Plus votre profile sera complet, plus vous aurez des chances d'être invités.\n\n\n"+
+    "Nous sommes persuadé pour que ce projet fonctionne, la qualité des personnes s'y trouvant est primordiale. Plus votre profil sera complet, plus vous aurez des chances d'être invités.\n\n\n"+
     adminMsg[msgId]+".\n\n"+
-    "Vous pouvez accéder à votre profile à l'adresse suivante:\n\n"+
+    "Vous pouvez accéder à votre profil à l'adresse suivante:\n\n"+
     Meteor.absoluteUrl()+"profile/"+to._id+"/edit\n\n"+
     "L'équipe de L'addition est pour moi.\n"+
     Meteor.absoluteUrl()+"\n";
@@ -122,7 +122,7 @@ var sendAdminMail = function (fromId, toId, msgId) {
     from: fromEmail,
     to: toEmail,
     replyTo: fromEmail || undefined,
-    subject: "L'addition est pour moi: Améliorez votre profile pour être listé",
+    subject: "L'addition est pour moi: Améliorez votre profil pour être listé",
     text: txt
   });
 }

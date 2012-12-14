@@ -310,9 +310,9 @@ Template.profilePage.mentorchecked = function () {
 
 Template.profilePage.modalLabel = function () {
   var user = Meteor.users.findOne(Session.get("profile"));
-  if(user === undefined) return 'Profile';
-  else if(user._id == Meteor.userId()) return 'Mon profile';
-  else return 'Le profile de '+user.profile.name;
+  if(user === undefined) return 'Profil';
+  else if(user._id == Meteor.userId()) return 'Mon profil';
+  else return 'Le profil de '+user.profile.name;
 };
 
 Template.profilePage.user = function () {
