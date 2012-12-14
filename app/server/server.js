@@ -27,6 +27,22 @@ Meteor.publish("tags", function () {
 
 Accounts.config({sendVerificationEmail: true});
 
+Accounts.validateNewUser(function(user) {
+  // We still want the default hook's 'profile' behavior.
+  console.log(user);
+  m(user._id, 'created profile');
+  return true;
+});
+
+var contactEmail = function (user) {
+  if (user.emails && user.emails.length)
+    return user.emails[0].address;
+  if (user.services && user.services.facebook && user.services.facebook.email)
+    return user.services.facebook.email;
+  return null;
+};
+
+
 var sendInvitation = function (fromId, toId, msg) {
   var from = Meteor.users.findOne(fromId);
   var to = Meteor.users.findOne(toId);
@@ -44,7 +60,6 @@ var sendInvitation = function (fromId, toId, msg) {
     Meteor.absoluteUrl()+"\n";
 
   Email.send({
-//        from: "noreply@ladditionestpourmoi.fr",
     from: fromEmail,
     to: toEmail,
     replyTo: fromEmail || undefined,
@@ -61,10 +76,54 @@ var sendInvitation = function (fromId, toId, msg) {
   });
 }
 
-var contactEmail = function (user) {
-  if (user.emails && user.emails.length)
-    return user.emails[0].address;
-  if (user.services && user.services.facebook && user.services.facebook.email)
-    return user.services.facebook.email;
-  return null;
+var m = function (id, msg) {
+  var u = Meteor.users.findOne(id);
+  var name;
+  if(u && u.profile && u.profile.name)
+    name = u.profile.name;
+  else if(u && u.emails[0].address)
+    name = u.emails[0].address;
+  else
+    name = id;
+  Email.send({
+    from: 'acemtp@gmail.com',
+    to: 'acemtp@gmail.com',
+    replyTo: 'acemtp@gmail.com',
+    subject: "L'addition est pour moi: "+name+" "+msg,
+    text: name+" "+msg+"\n\n"+
+      Meteor.absoluteUrl()+"profile/"+id+"\n\n"
+  });
+}
+
+
+var adminMsg = {
+  noPic: "Pour pouvoir valider votre profile, vous devez y mettre une photo de vous. Une photo rend votre profile beaucoup plus humain",
+  noBio: "Pour pouvoir valider votre profile, vous devez y mettre une biographie. C'est le seul moyen pour ceux qui veulent vous inviter de savoir ce que vous faites",
+  noTag: "Vous devriez ajouter des tags à votre profile. C'est un moyen simple pour vous trouver facilement en utiliser les filtres et afficher en un coup d'oeil les domaines que vous maitrisez",
 };
+
+var sendAdminMail = function (fromId, toId, msgId) {
+  var from = Meteor.users.findOne(fromId);
+  var to = Meteor.users.findOne(toId);
+  var fromEmail = "acemtp@gmail.com";
+  var toEmail = contactEmail(to);
+
+  var txt =
+    "Bonjour "+to.profile.name+",\n\n"+
+    "Je tenais à vous remercier de vous être inscrit à L'addition est pour moi ! Ce projet ne peut marcher que grace à vous !\n\n"+
+    "Nous sommes persuadé pour que ce projet fonctionne, la qualité des personnes s'y trouvant est primordiale. Plus votre profile sera complet, plus vous aurez des chances d'être invités.\n\n\n"+
+    adminMsg[msgId]+".\n\n"+
+    "Vous pouvez accéder à votre profile à l'adresse suivante:\n\n"+
+    Meteor.absoluteUrl()+"profile/"+to._id+"/edit\n\n"+
+    "L'équipe de L'addition est pour moi.\n"+
+    Meteor.absoluteUrl()+"\n";
+
+  Email.send({
+    from: fromEmail,
+    to: toEmail,
+    replyTo: fromEmail || undefined,
+    subject: "L'addition est pour moi: Améliorez votre profile pour être listé",
+    text: txt
+  });
+}
+

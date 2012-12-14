@@ -50,7 +50,10 @@ Meteor.Router.add({
     },
     '/profile/:id/edit': function(id) {
       Session.set('profile', id);
-      return 'profilePage';
+      if(Meteor.userId() && (Meteor.user().admin || Meteor.user()._id === id))
+        return 'profilePage';
+      else
+        return 'showProfilePage';
     }
 });
 
@@ -325,14 +328,14 @@ Template.profilePage.rendered = function () {
   $('.bigtag').tooltip();
 };
 
-Template.profilePage.tagObjs = function () {
-  var tags = Meteor.users.findOne(Session.get('profile')).profile.tags;
+Template.editTags.tagObjs = function () {
+  var tags = Meteor.users.findOne(Session.get('profile')).profile && Meteor.users.findOne(Session.get('profile')).profile.tags;
   return _.map(tags || [], function (tid) {
     return Tags.findOne(tid) || { _id: tid, name: '<deleted>', desc: 'outch the tag was deleted but still in your profile' };
   });
 };
 
-Template.profilePage.tags = function () {
+Template.editTags.tags = function () {
   var v = Tags.find().map(function (tag) {
     return tag.name;
   });
@@ -340,45 +343,69 @@ Template.profilePage.tags = function () {
   return v;
 };
 
-Template.profilePage.addingTag = function () {
+Template.editTags.addingTag = function () {
   return Session.equals('editingAddtag', this._id);
 };
 
-Template.profilePage.events({
-  'click #saveProfile' : function () {
-    var pic = document.getElementById("profilePicture").value;
-    if(pic === "")
-      pic = "http://www.gravatar.com/avatar/"+hex_md5(Meteor.users.findOne(Session.get("profile")).emails[0].address);
-    Meteor.users.update(Session.get("profile"), { $set: {
-      "profile.name": document.getElementById("profileName").value,
-      "profile.picture": pic,
-      "profile.twitter": document.getElementById("profileTwitter").value,
-      "profile.city": document.getElementById("profileCity").value,
-      "profile.bio": document.getElementById("profileBio").value,
-      "profile.mentor": ! ! document.getElementById("profileMentor").checked,
-    } });
-    $('#profilePage').modal('hide');
-  },
+Template.profilePage.saved = function () {
+  return Session.equals('saved', true);
+};
+
+Template.adminButtons.events({
   'click #setStarred' : function () {
-    $('#profilePage').modal('hide');
     Meteor.users.update(Meteor.users.findOne({starred:true}), { $unset: { starred: 1 } });
     Meteor.users.update(Session.get("profile"), { $set: { starred: true } });
   },
   'click #setAdmin' : function () {
-    $('#profilePage').modal('hide');
     Meteor.users.update(Session.get("profile"), { $set: { admin: true } });
   },
   'click #unsetAdmin' : function () {
-    $('#profilePage').modal('hide');
     Meteor.users.update(Session.get("profile"), { $unset: { admin: 1 } });
   },
   'click #setValidated' : function () {
-    $('#profilePage').modal('hide');
     Meteor.users.update(Session.get("profile"), { $set: { validated: true } });
   },
   'click #unsetValidated' : function () {
-    $('#profilePage').modal('hide');
     Meteor.users.update(Session.get("profile"), { $unset: { validated: 1 } });
+  },
+
+  'click #mailNoPic' : function () {
+    Meteor.call('adminMail', Session.get("profile"), "noPic");
+  },
+  'click #mailNoBio' : function () {
+    Meteor.call('adminMail', Session.get("profile"), "noBio");
+  },
+  'click #mailNoTag' : function () {
+    Meteor.call('adminMail', Session.get("profile"), "noTag");
+  },
+
+});
+
+
+Template.profilePage.events({
+  'click #saveProfile' : function () {
+
+    Session.set('saved', true);
+    Meteor.setTimeout(function () {
+      $('#saveAlert').fadeOut('slow', function() {
+        // Animation complete.
+        Session.set('saved', false);
+      });
+    },5000);
+
+    var pic = document.getElementById("profilePicture").value;
+    if(pic === "")
+      pic = "http://www.gravatar.com/avatar/"+hex_md5(Meteor.users.findOne(Session.get("profile")).emails[0].address);
+    Meteor.users.update(Session.get("profile"), { $set: {
+        "profile.name": document.getElementById("profileName").value,
+        "profile.picture": pic,
+        "profile.twitter": document.getElementById("profileTwitter").value,
+        "profile.city": document.getElementById("profileCity").value,
+        "profile.bio": document.getElementById("profileBio").value,
+        "profile.mentor": ! ! document.getElementById("profileMentor").checked,
+      }
+    });
+    Meteor.call('m', Session.get("profile"), "modified his profile");
   },
 
   'click .addtag': function (evt, tmpl) {

@@ -39,7 +39,7 @@
   {{> inviteDialog}}
   <footer class="footer">
     <div class="container">
-      <p>Développer par <b><a href="http://ploki.info">Vianney Lecroart</a></b> et <b><a href="http://www.noparking.net">No Parking</a></b> grace à <a href="http://www.meteor.com">Meteor</a>.</p>
+      <p>Développé par <b><a href="http://ploki.info">Vianney Lecroart</a></b> et <b><a href="http://www.noparking.net">No Parking</a></b> grace à <a href="http://www.meteor.com">Meteor</a>.</p>
       <p>Le projet est libre sous licence AGPLv3, le code souce est disponible sur <a href="https://github.com/noparking/ladditionestpourmoi">GitHub</a>.</p>
       <p>Vous pouvez nous rapporter problèmes et idées sur <a href="https://github.com/noparking/ladditionestpourmoi/issues">GitHub</a>.</p>
     </div>
@@ -86,7 +86,7 @@ Ce repas peut devenir l'occasion idéale d'échanger sur les problématiques de 
           <p><span class="label">L'addition est pour moi</span> est une initiative de <b><a href="http://ploki.info">Vianney Lecroart</a></b> et de la société <b>No Parking</b>, éditrice du <a href="http://opentime.fr/">logiciel de gestion du temps et de suivi d'ativités <b>Opentime</b></a>.</p>
         </div>
         <div class="span3">
-          <a href="http://opentime.fr/"><img src="http://ladditionestpourmoi.fr/medias/images/logo-opentime-250x125.png" class="img-rounded"/></a>
+          <a href="http://opentime.fr/"><img src="http://ladditionestpourmoi.fr/logo-opentime-250x125.png" class="img-rounded"/></a>
         </div>
       </div>
     </div>
@@ -167,7 +167,7 @@ Ce repas peut devenir l'occasion idéale d'échanger sur les problématiques de 
 <template name="sponsor">
   <br/><br/>
   Sponsor du mois :<br/>
-  <a href="http://opentime.fr/"><img src="http://ladditionestpourmoi.fr/medias/images/logo-opentime-250x125.png" class="img-rounded"/></a>
+  <a href="http://opentime.fr/"><img src="http://ladditionestpourmoi.fr/logo-opentime-250x125.png" class="img-rounded"/></a>
 </template>
 
 <template name="starredProfile">
@@ -243,28 +243,65 @@ Ce repas peut devenir l'occasion idéale d'échanger sur les problématiques de 
   </div>
 </template>
 
+<template name="adminButtons">
+  {{#isAdmin}}
+    <hr/>
+    <div>
+      <p><b>Envoyer un mail pour qu'il améliore son profil:</b></p>
+      <button type="button" id="mailNoPic" class="btn">Mettre une photo</button>
+      <button type="button" id="mailNoBio" class="btn">Mettre une biographie</button>
+      <button type="button" id="mailNoTag" class="btn">Mettre des tags</button>
+    </div>
+    <br/>
+    <div>
+      {{#if validated}}
+        <button type="button" id="unsetValidated" class="btn btn-danger">Invalider le profile</button>
+      {{else}}
+        <button type="button" id="setValidated" class="btn">Valider le profile</button>
+      {{/if}}
+      <button type="button" id="setStarred" class="btn">Mettre à l'affiche</button>
+      {{#if admin}}
+        <button type="button" id="unsetAdmin" class="btn btn-danger">Retirer l'admin</button>
+      {{else}}
+        <button type="button" id="setAdmin" class="btn">Passer admin</button>
+      {{/if}}
+    </div>
+    <br/>
+  {{/isAdmin}}
+</template>
+
+
+<template name="editTags">
+          <h2>Badges</h2>
+          <p>Enregistrez votre profile avant de mettre des tags sinon vos modifications seront perdues.</p>
+          <div class="item-tags">
+            {{#each tagObjs}}
+              <span class="bigtag label label-info removable_tag" title="{{desc}}" rel="tooltip">
+                <span class="name">{{name}}</span>
+                <span class="remove">&times;</span>
+              </span> 
+            {{/each}}
+            <br/><br/>
+            {{#if addingTag}}
+              <div class="edittag">
+                Tag: <input type="text" id="edittag-input" data-provide="typeahead" value="" data-source='{{tags}}'/>
+                <span class="help-block"><span class="label">Entrée</span> pour ajouter le tag - <span class="label">Esc</span> pour annuler</span>
+              </div>
+            {{else}}
+              <div class="btn addtag">Ajouter un badge</div>
+            {{/if}}
+          </div>
+</template>
+
 <template name="profilePage">
   {{#if user}}
     <div class="row">
       <div class="offset3 span6">
         <h2>{{modalLabel}}</h2>
         <form>
-          {{#isAdmin}}
-            <div>
-              {{#if user.validated}}
-                <button type="button" id="unsetValidated" class="btn btn-danger">Invalider le profile</button>
-              {{else}}
-                <button type="button" id="setValidated" class="btn">Valider le profile</button>
-              {{/if}}
-              <button type="button" id="setStarred" class="btn">Mettre à l'affiche</button>
-              {{#if user.admin}}
-                <button type="button" id="unsetAdmin" class="btn btn-danger">Retirer l'admin</button>
-              {{else}}
-                <button type="button" id="setAdmin" class="btn">Passer admin</button>
-              {{/if}}
-            </div>
-            <br/>
-          {{/isAdmin}}
+          {{#with user}}
+            {{> adminButtons}}
+          {{/with}}
           {{#if user.profile.mentor}}
             {{#if user.validated}}
              <div class="alert alert-success"><strong>Info</strong>: Votre profil est validé et apparait dans la liste des personnes souhaitant être invités.</div>
@@ -283,31 +320,24 @@ Ce repas peut devenir l'occasion idéale d'échanger sur les problématiques de 
           <label class="checkbox">
             <input id="profileMentor" {{mentorchecked}} type="checkbox" value="1"> Je désire partager mon experience et apparaître dans la liste des entrepreneurs pouvant être invités.
           </label>
-          <legend>Badges</legend>
-          <div class="item-tags">
-            {{#each tagObjs}}
-              <span class="bigtag label label-info removable_tag" title="{{desc}}" rel="tooltip">
-                <span class="name">{{name}}</span>
-                <span class="remove">&times;</span>
-              </span> 
-            {{/each}}
-            <br/><br/>
-            {{#if addingTag}}
-              <div class="edittag">
-                Tag: <input type="text" id="edittag-input" data-provide="typeahead" value="" data-source='{{tags}}'/>
-                <span class="help-block"><span class="label">Entrée</span> pour ajouter le tag - <span class="label">Esc</span> pour annuler</span>
-              </div>
-            {{else}}
-              <div class="btn addtag">Ajouter un badge</div>
-            {{/if}}
-          </div>
           <legend>Biographie</legend>
           <span class="help-block">Décrivez vos experiences et compétences qui pourraient interesser d'autres entrepreneurs.</span>
           <textarea id="profileBio" class="span7" rows="20">{{user.profile.bio}}</textarea>
         </form>
         <div class="form-actions">
+          {{#if saved}}
+            <div id="saveAlert" class="alert alert-success">
+              <button type="button" class="close" data-dismiss="alert">×</button>
+              <strong>Sauvé!</strong> Votre profile a bien été sauvegardé.
+            </div>
+          {{/if}}
           <button type="button" id="saveProfile" class="btn btn-primary">Enregistrer votre profile</button>
         </div>
+
+{{#with user}}
+  {{> editTags}}
+{{/with}}
+
       </div>
     </div>
   {{/if}}
@@ -318,7 +348,6 @@ Ce repas peut devenir l'occasion idéale d'échanger sur les problématiques de 
   {{#if user}}
     <div class="row">
       <div class="offset3 span6">
-
         <h2>{{user.profile.name}}</h2>
         <div class="row">
           <div class="span2">
@@ -334,6 +363,9 @@ Ce repas peut devenir l'occasion idéale d'échanger sur les problématiques de 
         </div>
         <br/>
         <p>{{bio user.profile.bio}}</p>
+        {{#with user}}
+          {{> adminButtons}}
+        {{/with}}
         {{#if currentUser}}
           <a class="invite btn btn-primary" ahref="#">L'inviter au restaurant</a> 
           {{#isAdmin}}

@@ -49,7 +49,7 @@ Accounts.emailTemplates.enrollAccount.text = function(user, url) {
     + "\n"
     + url + "\n"
     + "\n"
-    + "Provitez-en pour mettre à jour votre profile, mettre des tags, mettre une vrai photo (seules les profiles avec de vrais photos seront listés).\n"
+    + "Profitez-en pour mettre à jour votre profile; mettre des tags, une photo de vous (seuls les profiles avec de vrais photos seront affichés).\n"
     + "\n"
     + "Merci de votre compréhension et à bientôt,\n"
     + "\n"
